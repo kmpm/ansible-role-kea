@@ -1,0 +1,59 @@
+---
+# defaults file for kea
+
+kea_version: 2.5
+kea_user: _kea
+kea_group: root
+kea_file_version: "{{ kea_version | replace('.', '-') }}"
+kea_dhcp4_interface: eth1
+
+kea_keyring_location: /usr/share/keyrings/isc-kea-{{ kea_file_version }}-archive-keyring.gpg
+
+
+
+kea_dhcp4_config:
+  Dhcp4:
+    renew-timer: 1000
+    rebind-timer: 2000
+    valid-lifetime: 3600
+    interfaces-config:
+      interfaces: 
+        - "{{ kea_dhcp4_interface }}"
+    
+    control-socket:
+      socket-type: "unix"
+      socket-name: "/tmp/kea4-ctrl-socket"
+      
+    lease-database: 
+      type: memfile
+      lfc-interval: 3600
+      
+    expired-leases-processing:
+      reclaim-timer-wait-time: 10
+      flush-reclaimed-timer-wait-time: 25
+      hold-reclaimed-time: 3600
+      max-reclaim-leases: 100
+      unwarned-reclaim-cycles: 5
+    option-data: []
+     
+        
+    subnet4: 
+      - id: 1
+        subnet: "172.16.99.0/24"
+        pools:
+          - pool: "172.16.99.100 - 172.16.99.150"
+        option-data:
+          - name: routers
+            data: "172.16.99.254"
+    loggers: 
+      - name: "kea-dhcp4"
+        output_options: 
+          - output: stdout
+            pattern: "%-5p %m\n"
+            # flush: false
+            maxsize: 1048576
+            maxver: 8
+        severity: INFO
+        debuglevel: 0
+        
+      

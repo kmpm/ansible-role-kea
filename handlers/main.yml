@@ -1,0 +1,11 @@
+---
+# handlers file for kea
+- name: update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: reload dhcp4
+  ansible.builtin.systemd:
+    name: isc-kea-dhcp4-server
+    state: reloaded
+    enabled: yes

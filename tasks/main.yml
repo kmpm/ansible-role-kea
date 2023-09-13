@@ -1,0 +1,15 @@
+---
+# tasks file for kea
+- name: Include debian stuff
+  include_tasks: debian_install.yml
+  
+- name: Configure DHCP 4
+  ansible.builtin.template:
+    src: kea-dhcp4.conf.j2
+    dest: /etc/kea/kea-dhcp4.conf
+    mode: '0640'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+    validate: "kea-dhcp4 -t %s"
+  notify: reload dhcp4
+    
