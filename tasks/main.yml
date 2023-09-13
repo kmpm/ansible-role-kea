@@ -13,3 +13,13 @@
     validate: "kea-dhcp4 -t %s"
   notify: reload dhcp4
     
+    
+- name: Configure Ctrl Agent
+  ansible.builtin.template:
+    src: kea-ctrl-agent.conf.j2
+    dest: /etc/kea/kea-ctrl-agent.conf
+    mode: '0644'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+    validate: "kea-ctrl-agent -t %s"
+  notify: reload ctrl agent

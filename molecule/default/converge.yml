@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include kapitvatt.kea"
+    - name: "Include kmpm.kea"
       include_role:
-        name: "kapitvatt.kea"
+        name: "kmpm.kea"

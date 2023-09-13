@@ -9,3 +9,9 @@
     name: isc-kea-dhcp4-server
     state: reloaded
     enabled: yes
+    
+- name: reload ctrl agent
+  ansible.builtin.systemd:
+    name: isc-kea-ctrl-agent
+    state: reloaded
+    enabled: yes
