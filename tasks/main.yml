@@ -2,6 +2,17 @@
 # tasks file for kea
 - name: Include debian stuff
   include_tasks: debian_install.yml
+
+- name: Configure DHCP 4 sadf
+  ansible.builtin.template:
+    src: kea-dhcp4.conf.j2
+    dest: /tmp/kea-dhcp4.conf
+    mode: '0640'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+    # validate: "kea-dhcp4 -t %s"
+  # notify: reload dhcp4
+  
   
 - name: Configure DHCP 4
   ansible.builtin.template:
@@ -12,8 +23,17 @@
     group: "{{ kea_group }}"
     validate: "kea-dhcp4 -t %s"
   notify: reload dhcp4
-    
-    
+  
+- name: Configure DHCP 6
+  ansible.builtin.template:
+    src: kea-dhcp6.conf.j2
+    dest: /etc/kea/kea-dhcp6.conf
+    mode: '0640'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+    validate: "kea-dhcp6 -t %s"
+  notify: reload dhcp6
+  
 - name: Configure Ctrl Agent
   ansible.builtin.template:
     src: kea-ctrl-agent.conf.j2
@@ -23,3 +43,4 @@
     group: "{{ kea_group }}"
     validate: "kea-ctrl-agent -t %s"
   notify: reload ctrl agent
+  

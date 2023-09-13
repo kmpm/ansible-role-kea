@@ -5,26 +5,56 @@ kea_version: 2.5
 kea_user: _kea
 kea_group: root
 kea_file_version: "{{ kea_version | replace('.', '-') }}"
-kea_dhcp4_interface: eth1
+kea_interfaces: [ ]
 
 kea_keyring_location: /usr/share/keyrings/isc-kea-{{ kea_file_version }}-archive-keyring.gpg
+kea_hooks_dir: /usr/lib/x86_64-linux-gnu/kea/hooks
 
 kea_ctrl_host: "127.0.0.1"
 kea_ctrl_port: 8080
 
-
+        
+kea_ctrl_config:
+  Control-agent:
+    http-host: "{{ kea_ctrl_host }}"
+    http-port: "{{ kea_ctrl_port }}"
+    control-sockets:
+      dhcp4:
+        socket-type: unix
+        socket-name: /tmp/kea4-ctrl-socket
+      dhcp6:
+        socket-type: unix
+        socket-name: /tmp/kea6-ctrl-socket
+      d2:
+        socket-type: unix
+        socket-name: /tmp/kea-ddns-ctrl-socket
+          
+    hooks-libraries: [ ]
+    
+    loggers:
+      - name: kea-ctrl-agent
+        output_options: 
+          - output: "stdout"
+            pattern: "%-5p %m\n"
+        severity: INFO
+        debuglevel: 0
+    
+    
+# dhcp4 - config
 kea_dhcp4_config:
   Dhcp4:
     renew-timer: 1000
     rebind-timer: 2000
     valid-lifetime: 3600
     interfaces-config:
-      interfaces: 
-        - "{{ kea_dhcp4_interface }}"
+      interfaces: "{{ kea_interfaces | list }}"
     
     control-socket:
       socket-type: "unix"
       socket-name: "/tmp/kea4-ctrl-socket"
+    
+    hooks-libraries:
+      - library: "{{ kea_hooks_dir }}/libdhcp_stat_cmds.so"
       
     lease-database: 
       type: memfile
@@ -57,29 +87,46 @@ kea_dhcp4_config:
             maxver: 8
         severity: INFO
         debuglevel: 0
-        
-kea_ctrl_config:
-  Control-agent:
-    http-host: "{{ kea_ctrl_host }}"
-    http-port: "{{ kea_ctrl_port }}"
-    control-sockets:
-      dhcp4:
-        socket-type: unix
-        socket-name: /tmp/kea4-ctrl-socket
-      dhcp6:
-        socket-type: unix
-        socket-name: /tmp/kea6-ctrl-socket
-      d2:
-        socket-type: unix
-        socket-name: /tmp/kea-ddns-ctrl-socket
-          
-    hooks-libraries: [ ]
+
+# dhcp6 -config
+kea_dhcp6_config:
+  Dhcp6:
+    renew-timer: 1000
+    rebind-timer: 2000
+    valid-lifetime: 3600
     
-    loggers:
-      - name: kea-ctrl-agent
+    interfaces-config:
+      interfaces: "{{ kea_interfaces | list }}"
+      
+    control-socket:
+      socket-type: "unix"
+      socket-name: "/tmp/kea6-ctrl-socket"
+      
+    hooks-libraries:
+      - library: "{{ kea_hooks_dir }}/libdhcp_stat_cmds.so"
+      
+    lease-database: 
+      type: memfile
+      lfc-interval: 3600
+      
+    expired-leases-processing:
+      reclaim-timer-wait-time: 10
+      flush-reclaimed-timer-wait-time: 25
+      hold-reclaimed-time: 3600
+      max-reclaim-leases: 100
+      unwarned-reclaim-cycles: 5
+      
+    option-data: []
+    subnet6: []
+    
+    loggers: 
+      - name: "kea-dhcp6"
         output_options: 
-          - output: "stdout"
+          - output: stdout
             pattern: "%-5p %m\n"
+            # flush: false
+            maxsize: 1048576
+            maxver: 8
         severity: INFO
         debuglevel: 0
-    
+        
