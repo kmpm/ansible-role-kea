@@ -1,19 +1,58 @@
 ---
 # tasks file for kea
-- name: Include debian stuff
-  include_tasks: debian_install.yml
+- block:
+  - name: Include installation
+    include_tasks: debian_install.yml
+  when: kea_install
 
-- name: Configure DHCP 4 sadf
-  ansible.builtin.template:
-    src: kea-dhcp4.conf.j2
-    dest: /tmp/kea-dhcp4.conf
-    mode: '0640'
-    owner: "{{ kea_user }}"
-    group: "{{ kea_group }}"
-    # validate: "kea-dhcp4 -t %s"
-  # notify: reload dhcp4
+- block:
+  - name: Subnets 4
+    ansible.builtin.template:
+      src: subnets4.conf.j2
+      dest: /etc/kea/subnets4.conf
+      mode: '0640'
+      owner: "{{ kea_user }}"
+      group: "{{ kea_group }}"
+    notify: reload dhcp4
   
+  - name: Options 4
+    ansible.builtin.template:
+      src: options4.conf.j2
+      dest: /etc/kea/options4.conf
+      mode: '0640'
+      owner: "{{ kea_user }}"
+      group: "{{ kea_group }}"
+    notify: reload dhcp4
+    
+  - name: Subnets 6
+    ansible.builtin.template:
+      src: subnets6.conf.j2
+      dest: /etc/kea/subnets6.conf
+      mode: '0640'
+      owner: "{{ kea_user }}"
+      group: "{{ kea_group }}"
+    notify: reload dhcp6
   
+    
+  - name: Options 6
+    ansible.builtin.template:
+      src: options6.conf.j2 
+      dest: /etc/kea/options6.conf
+      mode: '0640'
+      owner: "{{ kea_user }}"
+      group: "{{ kea_group }}"
+    notify: reload dhcp6
+
+# - name: Tmp Configure DHCP 4
+#   ansible.builtin.template:
+#     src: kea-dhcp4.conf.j2
+#     dest: /tmp/kea-dhcp4.conf
+#     mode: '0640'
+#     owner: "{{ kea_user }}"
+#     group: "{{ kea_group }}"
+#     # validate: "kea-dhcp4 -t %s"
+#   # notify: restart dhcp4  
+
 - name: Configure DHCP 4
   ansible.builtin.template:
     src: kea-dhcp4.conf.j2
@@ -22,7 +61,8 @@
     owner: "{{ kea_user }}"
     group: "{{ kea_group }}"
     validate: "kea-dhcp4 -t %s"
-  notify: reload dhcp4
+  notify: restart dhcp4
+  
   
 - name: Configure DHCP 6
   ansible.builtin.template:
@@ -32,7 +72,8 @@
     owner: "{{ kea_user }}"
     group: "{{ kea_group }}"
     validate: "kea-dhcp6 -t %s"
-  notify: reload dhcp6
+  notify: restart dhcp6
+  
   
 - name: Configure Ctrl Agent
   ansible.builtin.template:
@@ -42,5 +83,15 @@
     owner: "{{ kea_user }}"
     group: "{{ kea_group }}"
     validate: "kea-ctrl-agent -t %s"
-  notify: reload ctrl agent
+  notify: restart ctrl agent
   
+  
+- name: Configure dhcp-ddns
+  ansible.builtin.template:
+    src: kea-dhcp-ddns.conf.j2
+    dest: /etc/kea/kea-dhcp-ddns.conf
+    mode: '0644'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+    validate: "kea-dhcp-ddns -t %s"
+  notify: restart dhcp-ddns

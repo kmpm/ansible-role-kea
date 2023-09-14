@@ -1,2 +1,39 @@
 # {{ ansible_managed }}
-{{ kea_dhcp6_config|to_nice_json }}
+{
+    "Dhcp6": {
+        "interfaces-config": {
+            "interfaces": {{  kea_interfaces | list | to_json }}
+        },
+        "renew-timer": 1000,
+        "rebind-timer": 2000,
+        "valid-lifetime": 3600,
+        "control-socket": {
+            "socket-name": "/tmp/kea6-ctrl-socket",
+            "socket-type": "unix"
+        },
+        
+        "hooks-libraries": {{ kea_dhcp_hooks | default([ ]) | to_json }},
+        
+        "lease-database": {{ kea_lease_database | default({'type':'memfile', 'lfc-interval':3600}) | to_json }},
+        
+        "option-data": <?include "/etc/kea/options6.conf" ?>,
+        
+        "subnet6": <?include "/etc/kea/subnets6.conf" ?>,
+        
+        "loggers": [
+            {
+                "debuglevel": 0,
+                "name": "kea-dhcp6",
+                "output_options": [
+                    {
+                        #"maxsize": 1048576,
+                        #"maxver": 8,
+                        "output": "stdout",
+                        "pattern": "%-5p %m\n"
+                    }
+                ],
+                "severity": "INFO"
+            }
+        ]
+    }
+}

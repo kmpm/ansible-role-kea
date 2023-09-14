@@ -21,3 +21,35 @@
     name: isc-kea-ctrl-agent
     state: reloaded
     enabled: yes
+    
+
+- name: reload dhcp-ddns
+  ansible.builtin.systemd:
+    name: isc-kea-dhcp-ddns-server
+    state: reloaded
+    enabled: yes
+    
+- name: restart dhcp4
+  ansible.builtin.systemd:
+    name: isc-kea-dhcp4-server
+    state: restarted
+    enabled: yes
+
+- name: restart dhcp6
+  ansible.builtin.systemd:
+    name: isc-kea-dhcp6-server
+    state: restarted
+    enabled: yes    
+
+- name: restart ctrl agent
+  ansible.builtin.systemd:
+    name: isc-kea-ctrl-agent
+    state: restarted
+    enabled: yes
+    
+
+- name: restart dhcp-ddns
+  ansible.builtin.systemd:
+    name: isc-kea-dhcp-ddns-server
+    state: restarted
+    enabled: yes
