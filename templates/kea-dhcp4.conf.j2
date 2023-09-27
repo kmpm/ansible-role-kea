@@ -12,13 +12,11 @@
             "socket-type": "unix"
         },
         
-        "hooks-libraries": {{ kea_dhcp_hooks | default([ ]) | to_json }},
+        "hooks-libraries": {{ kea_dhcp_hooks | default([ ]) | to_nice_json }},
         
         "lease-database": {{ kea_lease_database | default({'type':'memfile', 'lfc-interval':3600}) | to_json }},
         
-        "option-data": <?include "/etc/kea/options4.conf" ?>,
-        
-        "subnet4": <?include "/etc/kea/subnets4.conf" ?>,
+        <?include "/etc/kea/dhcp4-details.conf" ?>,
         
         "loggers": [
             {

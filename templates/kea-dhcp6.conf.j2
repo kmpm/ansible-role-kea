@@ -16,9 +16,8 @@
         
         "lease-database": {{ kea_lease_database | default({'type':'memfile', 'lfc-interval':3600}) | to_json }},
         
-        "option-data": <?include "/etc/kea/options6.conf" ?>,
+        <?include "/etc/kea/dhcp6-details.conf" ?>,
         
-        "subnet6": <?include "/etc/kea/subnets6.conf" ?>,
         
         "loggers": [
             {

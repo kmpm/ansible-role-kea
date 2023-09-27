@@ -1,7 +1,7 @@
-Role Name
+Ansible-Role-Kea
 =========
 
-A brief description of the role goes here.
+A ansible role for installing and configuring isc-kea on Debian.
 
 Requirements
 ------------
