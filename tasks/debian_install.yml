@@ -36,6 +36,6 @@
 - name: Install kea packages
   ansible.builtin.apt:
     pkg: 
-      - bind9
-      - bind9-utils
+      # - bind9
+      # - bind9-utils
       - isc-kea
