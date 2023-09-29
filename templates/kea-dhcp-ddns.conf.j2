@@ -1,2 +1,34 @@
-# {{ ansible_managed }}
-{{ kea_ddns_config|to_nice_json }}
+// {{ ansible_managed }}
+
+// Comments in this configuration file sometimes refer to sections for more
+// details. These are section numbers in Kea User's Guide. The version matching
+// your software should come with your Kea package, but it is also available
+// in ISC's Knowledgebase (https://kea.readthedocs.io; the direct link for
+// the stable version is https://kea.readthedocs.io/).
+//
+// This configuration file contains only DHCP DDNS daemon's configuration.
+// If configurations for other Kea services are also included in this file they
+// are ignored by the DHCP DDNS daemon.
+{
+// See Section 11 for examples and details description.
+"DhcpDdns":
+{
+  "ip-address": "{{ kea_ddns_ip }}",
+  "port": {{ kea_ddns_port }},
+  "control-socket": {
+      "socket-type": "{{ kea_ddns_control_socket_type }}",
+      "socket-name": "{{ kea_ddns_control_socket_name }}"
+  },
+  "tsig-keys": <?include "/etc/kea/tsig-keys.json" ?>,
+  "forward-ddns" : {
+    "ddns-domains": {{ kea_ddns_forward_domains | to_nice_json }}
+  },
+  "reverse-ddns" : {
+    "ddns-domains": {{ kea_ddns_reverse_domains | to_nice_json }}
+  },
+
+  // Logging configuration starts here. Kea uses different loggers to log various
+  // activities. For details (e.g. names of loggers), see Chapter 18.
+  "loggers": {{ kea_ddns_loggers | to_nice_json }}
+}
+}

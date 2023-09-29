@@ -1,0 +1,5 @@
+[
+{%for key in kea_ddns_tsig_keys %}
+    {"algorithm": "{{key.algorithm | default('HMAC-SHA256')}}", "name":"{{key.name}}", "secret":"{{key.secret}}"},
+{% endfor %}
+]

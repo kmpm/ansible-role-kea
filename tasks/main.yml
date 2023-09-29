@@ -11,13 +11,13 @@
       cmd: "kea-admin db-version pgsql -u {{ kea_pg.user }} -p {{ kea_pg.password }} -n {{ kea_pg.name }}"
     register: dbversion
     no_log: true
-    
+
   - name: postgres prep
     ansible.builtin.command:
       cmd: "kea-admin db-init pgsql -u {{ kea_pg.user }} -p {{ kea_pg.password }} -n {{ kea_pg.name }}"
     when: dbversion.stdout == ''
     no_log: true
-    
+
   when: kea_pg
 
 - block:
@@ -28,8 +28,8 @@
       mode: '0640'
       owner: "{{ kea_user }}"
       group: "{{ kea_group }}"
-    notify: reload dhcp4
-  
+    notify: restart dhcp4
+
   - name: Configure DHCP 4
     ansible.builtin.template:
       src: kea-dhcp4.conf.j2
@@ -41,7 +41,7 @@
     notify: restart dhcp4
 
 
-- block:  
+- block:
   - name: DHCP6 Details
     ansible.builtin.template:
       src: dhcp6-details.conf.j2
@@ -49,8 +49,8 @@
       mode: '0640'
       owner: "{{ kea_user }}"
       group: "{{ kea_group }}"
-    notify: reload dhcp6 
-    
+    notify: restart dhcp6
+
   - name: Configure DHCP 6
     ansible.builtin.template:
       src: kea-dhcp6.conf.j2
@@ -60,25 +60,36 @@
       group: "{{ kea_group }}"
       validate: "kea-dhcp6 -t %s"
     notify: restart dhcp6
-    
-  
+
+
+- block:
+  - name: Configure tsig-keys
+    ansible.builtin.template:
+      src: tsig-keys.json.j2
+      dest: /etc/kea/tsig-keys.json
+      mode: '0640'
+      owner: "{{ kea_user }}"
+      group: "{{ kea_group }}"
+    notify: restart dhcp-ddns
+
+  - name: Configure dhcp-ddns
+    ansible.builtin.template:
+      src: kea-dhcp-ddns.conf.j2
+      dest: /etc/kea/kea-dhcp-ddns.conf
+      mode: '0640'
+      owner: "{{ kea_user }}"
+      group: "{{ kea_group }}"
+      validate: "kea-dhcp-ddns -t %s"
+    notify: restart dhcp-ddns
+  when: (kea_dhcp4_ddns | bool) or (kea_dhcp6_ddns | bool)
+
+
 - name: Configure Ctrl Agent
   ansible.builtin.template:
     src: kea-ctrl-agent.conf.j2
     dest: /etc/kea/kea-ctrl-agent.conf
-    mode: '0644'
+    mode: '0640'
     owner: "{{ kea_user }}"
     group: "{{ kea_group }}"
     validate: "kea-ctrl-agent -t %s"
   notify: restart ctrl agent
-  
-  
-- name: Configure dhcp-ddns
-  ansible.builtin.template:
-    src: kea-dhcp-ddns.conf.j2
-    dest: /etc/kea/kea-dhcp-ddns.conf
-    mode: '0644'
-    owner: "{{ kea_user }}"
-    group: "{{ kea_group }}"
-    validate: "kea-dhcp-ddns -t %s"
-  notify: restart dhcp-ddns

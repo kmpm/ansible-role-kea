@@ -4,52 +4,44 @@
   ansible.builtin.apt:
     update_cache: yes
 
-- name: reload dhcp4
-  ansible.builtin.systemd:
-    name: isc-kea-dhcp4-server
-    state: reloaded
-    enabled: yes
+- name: Validate dhcp4 config
+  ansible.builtin.command:
+    cmd: kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
+  listen: restart dhcp4
 
-- name: reload dhcp6
-  ansible.builtin.systemd:
-    name: isc-kea-dhcp6-server
-    state: reloaded
-    enabled: yes    
-
-- name: reload ctrl agent
-  ansible.builtin.systemd:
-    name: isc-kea-ctrl-agent
-    state: reloaded
-    enabled: yes
-    
-
-- name: reload dhcp-ddns
-  ansible.builtin.systemd:
-    name: isc-kea-dhcp-ddns-server
-    state: reloaded
-    enabled: yes
-    
-- name: restart dhcp4
+- name: Restart dhcp4 service
   ansible.builtin.systemd:
     name: isc-kea-dhcp4-server
     state: restarted
     enabled: yes
+  listen: restart dhcp4
 
-- name: restart dhcp6
+- name: Validate dhcp6 config
+  ansible.builtin.command:
+    cmd: kea-dhcp6 -t /etc/kea/kea-dhcp6.conf
+  listen: restart dhcp6
+
+- name: Restart dhcp6 service
   ansible.builtin.systemd:
     name: isc-kea-dhcp6-server
     state: restarted
-    enabled: yes    
+    enabled: yes
+  listen: restart dhcp6
 
 - name: restart ctrl agent
   ansible.builtin.systemd:
     name: isc-kea-ctrl-agent
     state: restarted
     enabled: yes
-    
 
-- name: restart dhcp-ddns
+- name: Validate dhcp-ddns config
+  ansible.builtin.command:
+    cmd: kea-dhcp-ddns -t /etc/kea/kea-dhcp-ddns.conf
+  listen: restart dhcp-ddns
+
+- name: Restart dhcp-ddns service
   ansible.builtin.systemd:
     name: isc-kea-dhcp-ddns-server
     state: restarted
     enabled: yes
+  listen: restart dhcp-ddns

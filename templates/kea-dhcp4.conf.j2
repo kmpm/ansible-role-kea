@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+// {{ ansible_managed }}
 {
     "Dhcp4": {
         "interfaces-config": {
@@ -11,13 +11,39 @@
             "socket-name": "/tmp/kea4-ctrl-socket",
             "socket-type": "unix"
         },
-        
+
+        {% if kea_dhcp4_ddns | bool %}
+        "dhcp-ddns": {
+            "enable-updates": true,
+            "server-ip": "{{ kea_ddns_ip }}",
+            "server-port" : {{ kea_ddns_port }},
+            "sender-ip" : "127.0.0.1",
+            "sender-port" : 3433,
+            "max-queue-size" : 2048,
+            "ncr-protocol" : "UDP",
+            "ncr-format" : "JSON"
+        },
+        "ddns-send-updates" : true,
+        "ddns-override-no-update" : true,
+        "ddns-override-client-update" : true,
+        "ddns-replace-client-name" : "when-present",
+        //"ddns-generated-prefix" : "test.prefix",
+        {% if kea_ddns_suffix is defined -%}
+        "ddns-qualifying-suffix" : "{{ kea_ddns_suffix}}",
+        {% endif -%}
+        "ddns-update-on-renew" : true,
+        "ddns-use-conflict-resolution" : false,
+        "ddns-ttl-percent" : 0.75,
+        "hostname-char-set": "[^A-Za-z0-9.-]",
+        "hostname-char-replacement": "x",
+        {% endif %}
+
         "hooks-libraries": {{ kea_dhcp_hooks | default([ ]) | to_nice_json }},
-        
+
         "lease-database": {{ kea_lease_database | default({'type':'memfile', 'lfc-interval':3600}) | to_json }},
-        
+
         <?include "/etc/kea/dhcp4-details.conf" ?>,
-        
+
         "loggers": [
             {
                 "debuglevel": 0,
@@ -30,7 +56,7 @@
                         "pattern": "%-5p %m\n"
                     }
                 ],
-                "severity": "INFO"
+                "severity": "DEBUG"
             }
         ]
     }
