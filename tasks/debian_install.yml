@@ -10,16 +10,6 @@
   ansible.builtin.shell: "curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-{{ kea_file_version }}/gpg.D4FEAEAEFBD81FB9.key' |  gpg --dearmor >> {{ kea_keyring_location }}"
   args:
     creates: "{{ kea_keyring_location }}"
-    
-    
-
-# - name: Add cloudsmith kea repository into sources list
-
-#   ansible.builtin.get_url: 
-#     url: "https://dl.cloudsmith.io/public/isc/kea-{{ kea_file_version }}/config.deb.txt?distro={{ ansible_distribution | lower }}&codename={{ ansible_distribution_release }}"
-#     dest: "/etc/apt/sources.list.d/isc-kea-{{ kea_file_version }}.list"
-#   notify: update apt cache
-
 
 - name: Add cloudsmith kea deb repository into sources list
   ansible.builtin.apt_repository:
@@ -36,6 +26,4 @@
 - name: Install kea packages
   ansible.builtin.apt:
     pkg: 
-      # - bind9
-      # - bind9-utils
       - isc-kea

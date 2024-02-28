@@ -37,6 +37,7 @@ kea_dhcp_hooks:
 
 
 # dhcp4
+kea_dhcp4: yes
 kea_dhcp4_renew_timer: "{{ kea_dhcp_renew_timer }}"
 kea_dhcp4_valid_lifetime: "{{ kea_dhcp_valid_lifetime }}"
 kea_dhcp4_ddns: no
@@ -46,6 +47,7 @@ kea_dhcp4_lease_database: "{{ kea_lease_database }}"
 kea_dhcp4_log_severity: "{{ kea_log_severity }}"
 
 # dhcp6
+kea_dhcp6: yes
 kea_dhcp6_ddns: no
 kea_options6: [ ]
 kea_subnets6: [ ]

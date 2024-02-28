@@ -1,0 +1,5 @@
+#!/bin/env bash
+# {{ ansible_managed }}
+FIL=${@: -1}
+cp $FIL /tmp/sample.conf
+$@

@@ -1,0 +1,19 @@
+---
+- name: Configure tsig-keys
+  ansible.builtin.template:
+    src: tsig-keys.json.j2
+    dest: /etc/kea/tsig-keys.json
+    mode: '0640'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+  notify: restart dhcp-ddns
+
+- name: Configure dhcp-ddns
+  ansible.builtin.template:
+    src: kea-dhcp-ddns.conf.j2
+    dest: /etc/kea/kea-dhcp-ddns.conf
+    mode: '0640'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+    validate: "kea-dhcp-ddns -t %s"
+  notify: restart dhcp-ddns

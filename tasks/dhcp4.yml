@@ -1,0 +1,21 @@
+---
+# tasks for dhcp4
+- block:
+  - name: Disable DHCP 4
+    ansible.builtin.service:
+      name: isc-kea-dhcp4-server
+      enabled: no
+      state: stopped
+  when: not kea_dhcp4
+
+- block:
+  - name: Configure DHCP 4 
+    ansible.builtin.template:
+      src: kea-dhcp4.conf.j2
+      dest: /etc/kea/kea-dhcp4.conf
+      mode: '0640'
+      owner: "{{ kea_user }}"
+      group: "{{ kea_group }}"
+      validate: "validate.sh kea-dhcp4 -t %s"
+    notify: restart dhcp4
+  when: kea_dhcp4

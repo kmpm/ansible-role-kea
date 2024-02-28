@@ -1,0 +1,10 @@
+---
+# tasks for helpers
+
+- name: validation debug script
+  ansible.builtin.template:
+    src: validate.sh.j2
+    dest: /usr/local/bin/validate.sh
+    mode: '0755'
+    owner: root
+    group: root
