@@ -1,2 +1,9 @@
+// options4
+{% if kea_options4 %}
 "option-data": {{ kea_options4 | to_nice_json }},
+{% endif %}
+
+// subnet4
+{% if kea_subnets4 %}
 "subnet4": {{ kea_subnets4 |to_nice_json }}
+{% endif %}

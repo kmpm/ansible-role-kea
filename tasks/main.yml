@@ -20,36 +20,47 @@
 
   when: kea_pg
 
-- block:
-  - name: DHCP4 Details
-    ansible.builtin.template:
-      src: dhcp4-details.conf.j2
-      dest: /etc/kea/dhcp4-details.conf
-      mode: '0640'
-      owner: "{{ kea_user }}"
-      group: "{{ kea_group }}"
-    notify: restart dhcp4
+- name: validation script
+  ansible.builtin.copy:
+    dest: /usr/local/bin/validate.sh
+    content: |
+      #!/bin/env bash
+      FIL=${@: -1}
+      cp $FIL /tmp/sample.conf
+      $@
+    owner: root
+    group: root
+    mode: '0755'
 
-  - name: Configure DHCP 4
+- block:
+  # - name: DHCP4 Details Configuration
+  #   ansible.builtin.template:
+  #     src: dhcp4-details.conf.j2
+  #     dest: /etc/kea/dhcp4-details.conf
+  #     mode: '0640'
+  #     owner: "{{ kea_user }}"
+  #     group: "{{ kea_group }}"
+  #   notify: restart dhcp4
+
+  - name: Configure DHCP 4 
     ansible.builtin.template:
       src: kea-dhcp4.conf.j2
       dest: /etc/kea/kea-dhcp4.conf
       mode: '0640'
       owner: "{{ kea_user }}"
       group: "{{ kea_group }}"
-      validate: "kea-dhcp4 -t %s"
+      validate: "validate.sh kea-dhcp4 -t %s"
     notify: restart dhcp4
 
-
 - block:
-  - name: DHCP6 Details
-    ansible.builtin.template:
-      src: dhcp6-details.conf.j2
-      dest: /etc/kea/dhcp6-details.conf
-      mode: '0640'
-      owner: "{{ kea_user }}"
-      group: "{{ kea_group }}"
-    notify: restart dhcp6
+  # - name: DHCP6 Details Configuration
+  #   ansible.builtin.template:
+  #     src: dhcp6-details.conf.j2
+  #     dest: /etc/kea/dhcp6-details.conf
+  #     mode: '0640'
+  #     owner: "{{ kea_user }}"
+  #     group: "{{ kea_group }}"
+  #   notify: restart dhcp6
 
   - name: Configure DHCP 6
     ansible.builtin.template:
@@ -58,9 +69,8 @@
       mode: '0640'
       owner: "{{ kea_user }}"
       group: "{{ kea_group }}"
-      validate: "kea-dhcp6 -t %s"
+      validate: "validate.sh kea-dhcp6 -d -t %s"
     notify: restart dhcp6
-
 
 - block:
   - name: Configure tsig-keys

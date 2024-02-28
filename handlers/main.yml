@@ -4,10 +4,10 @@
   ansible.builtin.apt:
     update_cache: yes
 
-- name: Validate dhcp4 config
-  ansible.builtin.command:
-    cmd: kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
-  listen: restart dhcp4
+# - name: Validate dhcp4 config
+#   ansible.builtin.command:
+#     cmd: kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
+#   listen: restart dhcp4
 
 - name: Restart dhcp4 service
   ansible.builtin.systemd:
@@ -16,10 +16,10 @@
     enabled: yes
   listen: restart dhcp4
 
-- name: Validate dhcp6 config
-  ansible.builtin.command:
-    cmd: kea-dhcp6 -t /etc/kea/kea-dhcp6.conf
-  listen: restart dhcp6
+# - name: Validate dhcp6 config
+#   ansible.builtin.command:
+#     cmd: kea-dhcp6 -t /etc/kea/kea-dhcp6.conf
+#   listen: restart dhcp6
 
 - name: Restart dhcp6 service
   ansible.builtin.systemd:

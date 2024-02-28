@@ -1,2 +1,7 @@
+
+{% if kea_options6 %}
 "option-data": {{ kea_options6 | to_nice_json }},
+{% endif %}
+{% if kea_subnets6 %}
 "subnet6": {{ kea_subnets6 | to_nice_json }}
+{% endif %}

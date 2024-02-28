@@ -40,9 +40,17 @@
 
         "hooks-libraries": {{ kea_dhcp_hooks | default([ ]) | to_nice_json }},
 
-        "lease-database": {{ kea_lease_database | default({'type':'memfile', 'lfc-interval':3600}) | to_json }},
+        "lease-database": {{ kea_lease_database | to_json }},
 
-        <?include "/etc/kea/dhcp4-details.conf" ?>,
+        # Global Options
+        {% if kea_options4 %}
+        "option-data": {{ kea_options4 | to_nice_json }},
+        {% endif %}
+
+        # Subnets
+        {% if kea_subnets4 %}
+        "subnet4": {{ kea_subnets4 |to_nice_json }},
+        {% endif %}
 
         "loggers": [
             {

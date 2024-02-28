@@ -9,17 +9,20 @@ kea_interfaces: [ ]
 kea_install: true
 
 kea_keyring_location: /usr/share/keyrings/isc-kea-{{ kea_file_version }}-archive-keyring.gpg
-kea_hooks_dir: /usr/lib/x86_64-linux-gnu/kea/hooks
+kea_hooks_dir: "/usr/lib/{{ ansible_architecture }}-linux-gnu/kea/hooks"
 kea_install_dir: /usr/share/kea
 
 kea_ctrl_host: "127.0.0.1"
 kea_ctrl_port: 8080
 
+kea_pg: no
 kea_pg_database:
 kea_pg_user:
 kea_pg_password:
 
-kea_lease_database:
+kea_lease_database: 
+  type: 'memfile' 
+  lfc-interval: 3600
 kea_hosts_database:
 
 kea_dhcp_hooks:
@@ -30,6 +33,7 @@ kea_dhcp_hooks:
 kea_server_tag: "dhcp_{{ ansible_hostname }}"
 
 kea_dhcp4_ddns: no
+kea_dhcp6_ddns: no
 
 kea_options4: [ ]
 kea_options6: [ ]

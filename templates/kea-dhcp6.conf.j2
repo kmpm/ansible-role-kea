@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+// {{ ansible_managed }}
 {
     "Dhcp6": {
         "interfaces-config": {
@@ -14,11 +14,19 @@
         
         "hooks-libraries": {{ kea_dhcp_hooks | default([ ]) | to_json }},
         
-        "lease-database": {{ kea_lease_database | default({'type':'memfile', 'lfc-interval':3600}) | to_json }},
+        "lease-database": {{ kea_lease_database | to_json }},
         
-        <?include "/etc/kea/dhcp6-details.conf" ?>,
+        // Global Options
+        {% if kea_options6 %}
+        "option-data": {{ kea_options6 | to_nice_json }},
+        {% endif %}
+
+        // Subnets
+        {% if kea_subnets6 %}
+        "subnet6": {{ kea_subnets6 | to_nice_json }},
+        {% endif %}
         
-        
+
         "loggers": [
             {
                 "debuglevel": 0,
