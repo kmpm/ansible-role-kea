@@ -23,6 +23,7 @@ kea_pg_password:
 kea_lease_database: 
   type: 'memfile' 
   lfc-interval: 3600
+
 kea_hosts_database:
 
 kea_dhcp_hooks:
@@ -41,6 +42,8 @@ kea_options6: [ ]
 kea_subnets4: [ ]
 kea_subnets6: [ ]
 
+kea_dhcp4_lease_database: "{{ kea_lease_database }}"
+kea_dhcp6_lease_database: "{{ kea_lease_database }}"
 
 kea_ctrl_config:
   Control-agent:

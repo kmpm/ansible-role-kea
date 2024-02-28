@@ -40,7 +40,7 @@
 
         "hooks-libraries": {{ kea_dhcp_hooks | default([ ]) | to_nice_json }},
 
-        "lease-database": {{ kea_lease_database | to_json }},
+        "lease-database": {{ kea_dhcp4_lease_database | to_json }},
 
         # Global Options
         {% if kea_options4 %}
