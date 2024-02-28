@@ -1,0 +1,31 @@
+# https://medium.com/@fabio.marinetti81/validate-ansible-roles-through-molecule-delegated-driver-a2ea2ab395b5
+# https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule
+
+- name: initialize instance facts
+  set_fact:
+    instance_created:
+      instances: []
+  when: instance_created is not defined
+
+# create instance here
+- name: initialize instance
+  incus_instance:
+    name: "{{ item.name }}"
+    source:
+      alias: "{{ item.source.alias }}"
+      type: "{{ item.source.type | default('image') }}"
+      server: "{{ item.source.server | default('https://images.linuxcontainers.org') }}"
+      protocol: "{{ item.source.protocol | default('simplestreams') }}"
+      mode: "{{ item.source.mode | default('pull') }}"
+      allow_inconsistent: false
+  register: instance_state
+
+- name: show initialization
+  debug:
+    var: instance_state
+
+- name: update instance facts
+  set_fact:
+    instance_created:
+      changed: "{{ instance_state.changed | bool }}"
+      instances: "{{ instance_created.instances + [ item ] }}"

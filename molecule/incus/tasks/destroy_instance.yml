@@ -1,0 +1,17 @@
+- name: initialize instance facts
+  set_fact:
+    instance_destroyed:
+      instances: []
+  when: instance_destroyed is not defined
+
+# create instance here
+- name: initialize instance
+  incus_instance:
+    name: "{{ item.name }}"
+    state: absent
+
+- name: update instance facts
+  set_fact:
+    instance_destroyed:
+      changed: item.changed | bool
+      instances: "{{ instance_destroyed.instances + [ item ] }}"
