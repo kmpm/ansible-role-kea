@@ -1,2 +1,4 @@
 ---
 # vars file for kea
+
+kea_file_version: "{{ kea_version | replace('.', '-') }}"

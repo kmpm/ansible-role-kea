@@ -38,6 +38,10 @@ A list of subnet configs that will be written as JSON to the dhcp4 config.
 DHCP v4 Options like `domain-name-servers` and so on. For details look at  [Kea standard options](https://kea.readthedocs.io/en/kea-2.5.0/arm/dhcp4-srv.html#standard-dhcpv4-options)
 
 
+    kea_dhcp4_ddns: no
+
+Set to yes to enable ddns for dhcp4.
+
 
 Dependencies
 ------------

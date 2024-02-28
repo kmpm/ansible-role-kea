@@ -4,9 +4,10 @@
 kea_version: 2.5
 kea_user: _kea
 kea_group: root
-kea_file_version: "{{ kea_version | replace('.', '-') }}"
 kea_interfaces: [ ]
 kea_install: true
+
+kea_log_severity: INFO
 
 kea_keyring_location: /usr/share/keyrings/isc-kea-{{ kea_file_version }}-archive-keyring.gpg
 kea_hooks_dir: "/usr/lib/{{ ansible_architecture }}-linux-gnu/kea/hooks"
@@ -20,31 +21,39 @@ kea_pg_database:
 kea_pg_user:
 kea_pg_password:
 
+kea_server_tag: "dhcp_{{ ansible_hostname }}"
+kea_dhcp_renew_timer: 1000
+kea_dhcp_valid_lifetime: 3600
+kea_hosts_database:
+
 kea_lease_database: 
   type: 'memfile' 
   lfc-interval: 3600
-
-kea_hosts_database:
 
 kea_dhcp_hooks:
   - library: "{{ kea_hooks_dir }}/libdhcp_stat_cmds.so"
   - library: "{{ kea_hooks_dir }}/libdhcp_lease_cmds.so"
   # - library: "{{ kea_hooks_dir }}/libdhcp_pgsql_cb.so"
 
-kea_server_tag: "dhcp_{{ ansible_hostname }}"
 
+# dhcp4
+kea_dhcp4_renew_timer: "{{ kea_dhcp_renew_timer }}"
+kea_dhcp4_valid_lifetime: "{{ kea_dhcp_valid_lifetime }}"
 kea_dhcp4_ddns: no
-kea_dhcp6_ddns: no
-
 kea_options4: [ ]
-kea_options6: [ ]
-
 kea_subnets4: [ ]
-kea_subnets6: [ ]
-
 kea_dhcp4_lease_database: "{{ kea_lease_database }}"
+kea_dhcp4_log_severity: "{{ kea_log_severity }}"
+
+# dhcp6
+kea_dhcp6_ddns: no
+kea_options6: [ ]
+kea_subnets6: [ ]
 kea_dhcp6_lease_database: "{{ kea_lease_database }}"
 
+
+
+# kea-ctrl-agent
 kea_ctrl_config:
   Control-agent:
     http-host: "{{ kea_ctrl_host }}"
@@ -67,7 +76,7 @@ kea_ctrl_config:
         output_options:
           - output: "stdout"
             pattern: "%-5p %m\n"
-        severity: INFO
+        severity: "{{ kea_log_severity }}"
         debuglevel: 0
 
 # ddns

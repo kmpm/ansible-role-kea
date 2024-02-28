@@ -1,12 +1,12 @@
 galaxy_info:
   author: Peter Magnusson
   namespace: kmpm
-  description: your role description
+  description: Installing and configuring isc-kea on Debian.
   #company: your company (optional)
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
-  # issue_tracker_url: http://example.com/issue/tracker
+  issue_tracker_url: http://github.com/kmpm/ansible-role-kea/issues
 
   # Choose a valid license ID from https://spdx.org - some suggested licenses:
   # - BSD-3-Clause (default)
@@ -28,7 +28,10 @@ galaxy_info:
   # To view available platforms and versions (or releases), visit:
   # https://galaxy.ansible.com/api/v1/platforms/
   #
-  # platforms:
+  platforms:
+  - name: Debian
+    versions:
+    - 12
   # - name: Fedora
   #   versions:
   #   - all

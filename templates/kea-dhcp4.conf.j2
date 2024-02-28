@@ -4,9 +4,9 @@
         "interfaces-config": {
             "interfaces": {{  kea_interfaces | list | to_json }}
         },
-        "renew-timer": 1000,
+        "renew-timer": {{ kea_dhcp4_renew_timer }},
         "rebind-timer": 2000,
-        "valid-lifetime": 3600,
+        "valid-lifetime": {{ kea_dhcp4_valid_lifetime }},
         "control-socket": {
             "socket-name": "/tmp/kea4-ctrl-socket",
             "socket-type": "unix"
@@ -64,7 +64,7 @@
                         "pattern": "%-5p %m\n"
                     }
                 ],
-                "severity": "DEBUG"
+                "severity": "{{ kea_dhcp4_log_severity }}"
             }
         ]
     }
