@@ -1,6 +1,7 @@
 galaxy_info:
   author: kmpm
   namespace: kmpm
+  role_name: kea
   description: Installing and configuring isc-kea on Debian.
   #company: your company (optional)
 
