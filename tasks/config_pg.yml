@@ -1,13 +1,13 @@
 ---
 # tasks for postgresql database
-- name: check db schema version
+- name: Check postgres db schema version
   ansible.builtin.command:
     cmd: "kea-admin db-version pgsql -u {{ kea_pg.user }} -p {{ kea_pg.password }} -n {{ kea_pg.name }}"
   register: dbversion
   no_log: true
 
-- name: postgres prep
+- name: Initialize postgres database
+  when: dbversion.stdout == ''
   ansible.builtin.command:
     cmd: "kea-admin db-init pgsql -u {{ kea_pg.user }} -p {{ kea_pg.password }} -n {{ kea_pg.name }}"
-  when: dbversion.stdout == ''
   no_log: true

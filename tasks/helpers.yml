@@ -1,7 +1,7 @@
 ---
 # tasks for helpers
 
-- name: validation debug script
+- name: Validation debug helper script 
   ansible.builtin.template:
     src: validate.sh.j2
     dest: /usr/local/bin/validate.sh

@@ -1,25 +1,26 @@
 ---
 # tasks file for kea
 - name: Helpers
-  include_tasks: helpers.yml
+  ansible.builtin.include_tasks: helpers.yml
 
-- block:
-  - name: Include installation
-    include_tasks: debian_install.yml
+- name: Installation block 
   when: kea_install
+  block:
+    - name: Include installation
+      ansible.builtin.include_tasks: debian_install.yml
 
 - name: Configure PostgreSQL
-  include_tasks: config_pg.yml
+  ansible.builtin.include_tasks: config_pg.yml
   when: kea_pg
 
 - name: Include DHCP 4
-  include_tasks: dhcp4.yml
+  ansible.builtin.include_tasks: dhcp4.yml
     
 - name: Include DHCP 6
-  include_tasks: dhcp6.yml
+  ansible.builtin.include_tasks: dhcp6.yml
 
 - name: Include ddns
-  include_tasks: ddns.yml
+  ansible.builtin.include_tasks: ddns.yml
   when: (kea_dhcp4_ddns | bool) or (kea_dhcp6_ddns | bool)
 
 - name: Configure Ctrl Agent

@@ -1,21 +1,21 @@
 ---
 # tasks for dhcp6
-- block:
-  - name: Disable DHCP 6
-    ansible.builtin.service:
-      name: isc-kea-dhcp6-server
-      enabled: no
-      state: stopped
-  when: not kea_dhcp6
 
-- block:
-  - name: Configure DHCP 6
-    ansible.builtin.template:
-      src: kea-dhcp6.conf.j2
-      dest: /etc/kea/kea-dhcp6.conf
-      mode: '0640'
-      owner: "{{ kea_user }}"
-      group: "{{ kea_group }}"
-      validate: "validate.sh kea-dhcp6 -d -t %s"
-    notify: restart dhcp6
+- name: Disable DHCP 6
+  when: not kea_dhcp6
+  ansible.builtin.service:
+    name: isc-kea-dhcp6-server
+    enabled: no
+    state: stopped
+
+
+- name: Configure DHCP 6
   when: kea_dhcp6
+  ansible.builtin.template:
+    src: kea-dhcp6.conf.j2
+    dest: /etc/kea/kea-dhcp6.conf
+    mode: '0640'
+    owner: "{{ kea_user }}"
+    group: "{{ kea_group }}"
+    validate: "validate.sh kea-dhcp6 -d -t %s"
+  notify: restart dhcp6
