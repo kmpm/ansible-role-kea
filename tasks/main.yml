@@ -32,3 +32,4 @@
     group: "{{ kea_group }}"
     validate: "kea-ctrl-agent -t %s"
   notify: restart ctrl agent
+  when: kea_version is version('3.0', '<')

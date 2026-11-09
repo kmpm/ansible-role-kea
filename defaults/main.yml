@@ -1,7 +1,7 @@
 ---
 # defaults file for kea
 
-kea_version: 2.5
+kea_version: 3.2
 kea_user: _kea
 kea_group: root
 kea_interfaces: [ ]
@@ -10,7 +10,7 @@ kea_install: true
 kea_log_severity: INFO
 
 kea_keyring_location: /usr/share/keyrings/isc-kea-{{ kea_file_version }}-archive-keyring.gpg
-kea_hooks_dir: "/usr/lib/{{ ansible_architecture }}-linux-gnu/kea/hooks"
+kea_hooks_dir: "/usr/lib/{{ ansible_facts['architecture'] }}-linux-gnu/kea/hooks"
 kea_install_dir: /usr/share/kea
 
 kea_ctrl_host: "127.0.0.1"

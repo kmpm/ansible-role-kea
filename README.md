@@ -18,7 +18,7 @@ Role Variables
 --------------
 Most of the variables are listed below. For a complete list see `defaults/main.yml`. For details on a lot of them I would check the [Kea Administrator Reference Manual (ARM)](https://kea.readthedocs.io/en/latest/index.html)
 
-    kea_version: 2.5
+    kea_version: 3.2
 
 Default version of Kea that will be installed. This role with pull packages from the [Cloudsmith repository](https://cloudsmith.io/~isc/repos/) so please check there for available versions. 
 
@@ -35,7 +35,7 @@ A list of subnet configs that will be written as JSON to the dhcp4 config.
     kea_options4: [ ]
 
 
-DHCP v4 Options like `domain-name-servers` and so on. For details look at  [Kea standard options](https://kea.readthedocs.io/en/kea-2.5.0/arm/dhcp4-srv.html#standard-dhcpv4-options)
+DHCP v4 Options like `domain-name-servers` and so on. For details look at  [Kea standard options](https://kea.readthedocs.io/en/kea-3.2.1/arm/dhcp4-srv.html#standard-dhcpv4-options)
 
 
     kea_dhcp4_ddns: no

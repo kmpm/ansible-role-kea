@@ -5,25 +5,33 @@
     pkg: 
       - gpg
       - curl
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
 
 - name: Add cloudsmith kea repos key
-  ansible.builtin.shell: "set -o pipefail && curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-{{ kea_file_version }}/gpg.D4FEAEAEFBD81FB9.key' |  gpg --dearmor >> {{ kea_keyring_location }}"
+  ansible.builtin.shell: "set -o pipefail && curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-{{ kea_file_version }}/gpg.720DD962343B440F.key' |  gpg --dearmor >> {{ kea_keyring_location }}"
   args:
     creates: "{{ kea_keyring_location }}"
+  when: kea_file_version == '3-2'
 
-- name: Add cloudsmith kea deb repository into sources list
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by={{ kea_keyring_location }}]  https://dl.cloudsmith.io/public/isc/kea-{{ kea_file_version }}/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
-    state: present
-    filename: isc-kea-{{ kea_file_version }}
-    
-- name: Add cloudsmith kea deb-src repository into sources list
-  ansible.builtin.apt_repository:
-    repo: "deb-src [signed-by={{ kea_keyring_location }}]  https://dl.cloudsmith.io/public/isc/kea-{{ kea_file_version }}/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main"
-    state: present
-    filename: isc-kea-{{ kea_file_version }}
-    
+- name: Set mod on kea keyring
+  ansible.builtin.file:
+    path: "{{ kea_keyring_location }}"
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Get cloudsmith sources list
+  ansible.builtin.get_url:
+    url: "https://dl.cloudsmith.io/public/isc/kea-{{ kea_file_version }}/config.deb.txt?distro={{ ansible_facts['distribution'] | lower }}&codename={{ ansible_facts['distribution_release'] }}&component=main"
+    dest: "/etc/apt/sources.list.d/isc-kea-{{ kea_file_version }}.list"
+    mode: '0644'
+    owner: root
+    group: root
+
 - name: Install kea packages
   ansible.builtin.apt:
     pkg: 
       - isc-kea
+    update_cache: true
